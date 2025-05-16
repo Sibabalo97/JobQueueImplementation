@@ -23,7 +23,8 @@ bash git clone https://github.com/Sibabalo97/JobQueueImplementation.git
 
 cd to obQueueImplementation
 
-![alt text](image-5.png)
+![image](https://github.com/user-attachments/assets/5efc1b1d-c34b-4e81-be50-a36925d89969)
+
 
 Install dependencies:
 
@@ -123,7 +124,8 @@ job-queue/
 ├── package.json
 └── tsconfig.json
 
-![alt text](image.png)
+![image](https://github.com/user-attachments/assets/7e03a0a4-4d94-466c-90aa-cc62a0044b05)
+
 
 Running Tests
 bashnpm test
