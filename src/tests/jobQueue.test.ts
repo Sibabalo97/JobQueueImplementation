@@ -43,8 +43,7 @@ const test = {
         try {
             await fn();
             throw new Error(
-                `Expected to throw${
-                    expectedErrorMsg ? ` with message containing "${expectedErrorMsg}"` : ''
+                `Expected to throw${expectedErrorMsg ? ` with message containing "${expectedErrorMsg}"` : ''
                 }, but did not throw`
             );
         } catch (error: any) {
@@ -75,17 +74,17 @@ const wait = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(
 
 const createSuccessJob =
     (delay: number, value: any = `Job completed after ${delay}ms`) =>
-    async (...args: any[]): Promise<any> => {
-        await wait(delay);
-        return args.length > 0 ? `${value} with args: ${args.join(', ')}` : value;
-    };
+        async (...args: any[]): Promise<any> => {
+            await wait(delay);
+            return args.length > 0 ? `${value} with args: ${args.join(', ')}` : value;
+        };
 
 const createFailJob =
     (delay: number, errorMessage: string = `Job failed after ${delay}ms`) =>
-    async (): Promise<never> => {
-        await wait(delay);
-        throw new Error(errorMessage);
-    };
+        async (): Promise<never> => {
+            await wait(delay);
+            throw new Error(errorMessage);
+        };
 
 /**
  * Test cases

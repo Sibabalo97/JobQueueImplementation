@@ -9,13 +9,13 @@ export interface JobQueueOptions {
      * @default 1000
      */
     concurrencyLimit?: number;
-    
+
     /**
      * Rate limit in jobs per minute
      * @default Infinity
      */
     rateLimit?: number;
-    
+
     /**
      * Job timeout in seconds
      * @default 1200
@@ -31,12 +31,12 @@ export interface JobResult<T> {
      * The result of the job execution
      */
     result: T;
-    
+
     /**
      * Time spent in queue before execution (milliseconds)
      */
     queueTime: number;
-    
+
     /**
      * Time spent executing the job (milliseconds)
      */
@@ -64,7 +64,7 @@ export class JobQueue {
     private isDisposed = false;
     private jobHistory: number[] = [];
     private rateLimitInterval = 60000; // 1 minute in ms
-    
+
     /**
      * Creates a new JobQueue instance
      * @param options Configuration options for the queue
@@ -76,7 +76,7 @@ export class JobQueue {
             timeoutLimit: options.timeoutLimit ?? 1200
         };
     }
-    
+
     /**
      * Schedule a job to be executed
      * @param fn The job function to execute
@@ -88,7 +88,7 @@ export class JobQueue {
         if (this.isDisposed) {
             return Promise.reject(new Error('JobQueue has been disposed'));
         }
-        
+
         return new Promise<JobResult<T>>((resolve, reject) => {
             const job: Job<T> = {
                 fn,
@@ -97,12 +97,12 @@ export class JobQueue {
                 reject,
                 queuedAt: Date.now()
             };
-            
+
             this.queue.push(job);
             this.processQueue();
         });
     }
-    
+
     /**
      * Get the current size of the queue (excluding active jobs)
      * @returns The number of jobs waiting in the queue
@@ -110,7 +110,7 @@ export class JobQueue {
     size(): number {
         return this.queue.length;
     }
-    
+
     /**
      * Get the number of currently active jobs
      * @returns The number of jobs currently being executed
@@ -118,13 +118,13 @@ export class JobQueue {
     active(): number {
         return this.activeCount;
     }
-    
+
     /**
      * Dispose of the queue, rejecting all pending jobs
      */
     dispose(): void {
         this.isDisposed = true;
-        
+
         // Reject all queued jobs
         while (this.queue.length > 0) {
             const job = this.queue.shift();
@@ -133,31 +133,31 @@ export class JobQueue {
             }
         }
     }
-    
+
     /**
      * Process the next job in the queue if conditions are met
      */
     private async processQueue(): Promise<void> {
         // If already at concurrency limit or no jobs, exit
         if (
-            this.activeCount >= this.options.concurrencyLimit || 
+            this.activeCount >= this.options.concurrencyLimit ||
             this.queue.length === 0 ||
             this.isDisposed
         ) {
             return;
         }
-        
+
         // Check rate limit
         if (this.options.rateLimit !== Infinity) {
             const now = Date.now();
-            
+
             // Clean up history older than our rate limit interval
             this.jobHistory = this.jobHistory.filter(time => now - time < this.rateLimitInterval);
-            
+
             if (this.jobHistory.length >= this.options.rateLimit) {
                 const oldestJob = this.jobHistory[0];
                 const waitTime = Math.max(0, this.rateLimitInterval - (now - oldestJob));
-                
+
                 if (waitTime > 0) {
                     await new Promise(resolve => setTimeout(resolve, waitTime));
                     // Re-process after waiting
@@ -168,25 +168,25 @@ export class JobQueue {
                 }
             }
         }
-        
+
         // Take the next job from the queue
         const job = this.queue.shift();
         if (!job) return;
-        
+
         this.activeCount++;
-        
+
         // Record job start for rate limiting
         if (this.options.rateLimit !== Infinity) {
             this.jobHistory.push(Date.now());
         }
-        
+
         const startTime = Date.now();
         const queueTime = startTime - job.queuedAt;
-        
+
         // Create timeout controller if needed
         let timeoutId: NodeJS.Timeout | undefined;
         let timeoutReject: (reason?: any) => void;
-        
+
         const timeoutPromise = this.options.timeoutLimit !== Infinity
             ? new Promise<never>((_, reject) => {
                 timeoutReject = reject;
@@ -195,7 +195,7 @@ export class JobQueue {
                 }, this.options.timeoutLimit * 1000);
             })
             : null;
-        
+
         try {
             // Run the job with timeout if configured
             const result = timeoutPromise
@@ -205,10 +205,10 @@ export class JobQueue {
                     throw err;
                 }), timeoutPromise])
                 : await job.fn(...job.args);
-            
+
             const endTime = Date.now();
             const executionTime = endTime - startTime;
-            
+
             job.resolve({
                 result,
                 queueTime,
@@ -222,7 +222,7 @@ export class JobQueue {
             job.reject(error);
         } finally {
             this.activeCount--;
-            
+
             // Process next job in queue
             this.processQueue();
         }
