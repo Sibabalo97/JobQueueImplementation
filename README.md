@@ -132,9 +132,17 @@ bashnpm run build
 This will compile TypeScript files to JavaScript in the dist directory.
 
 tests in the Terminal 
+![image](https://github.com/user-attachments/assets/10d0110f-88d5-40d8-9996-723e9f54c86d)
 
-![alt text](image-1.png)
-![alt text](image-2.png)
+![image](https://github.com/user-attachments/assets/7ab7b749-a330-4688-8196-6d2c3edc6652)
 
-![alt text](image-3.png)
-![alt text](image-4.png)
+![image](https://github.com/user-attachments/assets/d2102935-3165-4849-aef6-18d101085cdf)
+
+![image](https://github.com/user-attachments/assets/9f80de74-962f-44e4-92e3-40bb6e1e7688)
+
+
+
+
+
+
+
