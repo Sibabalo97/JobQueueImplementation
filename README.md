@@ -21,6 +21,10 @@ Clone the repository:
 
 bash git clone https://github.com/Sibabalo97/JobQueueImplementation.git
 
+cd to obQueueImplementation
+
+![alt text](image-5.png)
+
 Install dependencies:
 
 bash
