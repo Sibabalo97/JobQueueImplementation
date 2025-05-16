@@ -19,12 +19,13 @@ Installation
 
 Clone the repository:
 
-bash git clone https://github.com/yourusername/job-queue.git
-cd job-queue
+bash git clone https://github.com/Sibabalo97/JobQueueImplementation.git
 
 Install dependencies:
 
-bashnpm install
+bash
+
+npm install
 
 Run the tests:
 
@@ -92,6 +93,7 @@ dispose(): void
 Rejects all pending jobs and cleans up resources.
 
 Job Results
+
 typescriptinterface JobResult<T> {
   result: T;           // The value returned by the job function
   queueTime: number;   // Time spent waiting in the queue (ms)
@@ -108,6 +110,8 @@ job-queue/
 │       └── jobQueue.test.ts  # Test suite
 ├── package.json
 └── tsconfig.json
+
+![alt text](image.png)
 
 Running Tests
 bashnpm test
